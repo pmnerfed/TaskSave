@@ -1,4 +1,5 @@
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,7 +66,7 @@ public class TaskSave {
         
         
     }
-    public static void addTask() throws ParseException
+    public static void addTask() throws ParseException, IOException, FileNotFoundException, ClassNotFoundException
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Creating a new task :-) ");
@@ -76,12 +77,25 @@ public class TaskSave {
         String d = in.nextLine();
         System.out.println("Enter expiry date  Example: 09/12/2013 11:00:00 PM [Default : NONE] :: ");
         String datetime = in.nextLine();
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
-        Date d1 = format.parse(datetime);
         
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+        Date d1;
+        if(!"".equals(datetime)){
+             d1= format.parse(datetime);
+        }
+        else{
+            d1=null;
+        }
         System.out.println("Enter priority [Default : 1] :: ");
         int pr = in.nextInt();
-        Task tsk = new Task(s, d, d1, pr);
+        Task tsk;
+        if("".equals(datetime)){
+            tsk= new Task(s, d, pr);
+        }else{
+            tsk = new Task(s, d, d1, pr);
+        }
+        
+        Task.writeTask(tsk);
     }
     
 }

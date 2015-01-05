@@ -98,7 +98,7 @@ public class Task implements Serializable {
     {
         List<Task> Tasks = new ArrayList<>();
         System.out.println("[INFO]  Reading all Tasks");
-        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("tasks.txt"));
+        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("tasks"));
         int N = inputStream.readInt();
         System.out.println("[INFO]  Total "+N+"Tasks");
         
@@ -112,11 +112,11 @@ public class Task implements Serializable {
         return Tasks;
     }
     
-    public void writeTask( Task t) throws FileNotFoundException, IOException, ClassNotFoundException
+    public static void writeTask( Task t) throws FileNotFoundException, IOException, ClassNotFoundException
     {
         List<Task> Tasks = readAllTasks();
         Tasks.add(t);
-        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("tasks.txt"));
+        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("tasks"));
         int N = Tasks.size();
         outputStream.writeInt(N);
         for(int i=0;i<N;i++)
