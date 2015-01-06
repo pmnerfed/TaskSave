@@ -1,9 +1,8 @@
 
 import java.io.*;
-import java.time.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.PriorityQueue;
 /*TODO:
 - Can add a return value to indicate error or success
 - 
@@ -13,7 +12,7 @@ import java.util.List;
  *
  * @author puneet
  */
-public class Task implements Serializable {
+public class Task implements Serializable, Comparable<Task> {
     private String title;
     private String desc;
     int priority;
@@ -94,37 +93,58 @@ public class Task implements Serializable {
         expirationTime = null;
     }
     
-    public static List<Task> readAllTasks() throws IOException, ClassNotFoundException
+    public static PriorityQueue<Task> readAllTasks() throws IOException, ClassNotFoundException
     {
-        List<Task> Tasks = new ArrayList<>();
+        PriorityQueue<Task> Tasks = new PriorityQueue<Task>();
         System.out.println("[INFO]  Reading all Tasks");
-        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("tasks"));
-        int N = inputStream.readInt();
-        System.out.println("[INFO]  Total "+N+"Tasks");
-        
-        for(int i=0;i<N;i++)
-        {
-            Task t = (Task) inputStream.readObject();
-            Tasks.add(t);
+        try{
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("tasks"));
+            int N = inputStream.readInt();
+            System.out.println("[INFO]  Total "+N+"Tasks");
+
+            for(int i=0;i<N;i++)
+            {
+                Task t = (Task) inputStream.readObject();
+                Tasks.add(t);
+            }
+            inputStream.close();
+            System.out.println("[INFO]  Successfully read all Tasks");
+            return Tasks;
+        }catch(FileNotFoundException e){
+            System.out.println("File not found.. Creating a new empty file ");
+            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("tasks"));
+            outputStream.writeInt(0);
+            outputStream.flush();
+            outputStream.close();
+            PriorityQueue<Task> t = new PriorityQueue<Task>();
+            return t;
         }
-        inputStream.close();
-        System.out.println("[INFO]  Successfully read all Tasks");
-        return Tasks;
     }
     
     public static void writeTask( Task t) throws FileNotFoundException, IOException, ClassNotFoundException
     {
-        List<Task> Tasks = readAllTasks();
+        PriorityQueue<Task> Tasks;
+        try{
+        Tasks = readAllTasks();
+        }catch(FileNotFoundException e){
+            System.out.println("[INFO]  file not found ... creating a new one");
+            Tasks = new PriorityQueue<Task>();
+        }
         Tasks.add(t);
-        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("tasks"));
         int N = Tasks.size();
+        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("tasks"));
         outputStream.writeInt(N);
         for(int i=0;i<N;i++)
         {
-            outputStream.writeObject(Tasks.get(i));
+            outputStream.writeObject(Tasks.poll());
         }
         outputStream.flush();
         outputStream.close();
         
+    }
+
+    @Override
+    public int compareTo(Task t2) {
+        return priority - t2.getPriority();
     }
 }
