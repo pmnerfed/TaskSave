@@ -121,16 +121,8 @@ public class Task implements Serializable, Comparable<Task> {
         }
     }
     
-    public static void writeTask( Task t) throws FileNotFoundException, IOException, ClassNotFoundException
+    public static void saveTasks(PriorityQueue<Task> Tasks) throws FileNotFoundException, IOException, ClassNotFoundException
     {
-        PriorityQueue<Task> Tasks;
-        try{
-        Tasks = readAllTasks();
-        }catch(FileNotFoundException e){
-            System.out.println("[INFO]  file not found ... creating a new one");
-            Tasks = new PriorityQueue<Task>();
-        }
-        Tasks.add(t);
         int N = Tasks.size();
         ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("tasks"));
         outputStream.writeInt(N);

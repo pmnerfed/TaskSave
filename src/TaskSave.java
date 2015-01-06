@@ -27,7 +27,8 @@ public class TaskSave {
     public static void main(String[] args) throws IOException, ClassNotFoundException, ParseException {
         // TODO 
         int num;
-        PriorityQueue<Task> Tasks = new PriorityQueue<Task>();
+        PriorityQueue<Task> tasks = new PriorityQueue<Task>();
+        tasks = Task.readAllTasks();
         while(true) 
         {
             if(args.length>0)
@@ -43,28 +44,30 @@ public class TaskSave {
             }
             switch(num)
             {
-                case 1: ListTasks();
+                case 1: ListTasks(tasks);
                     break;
                 
-                case 2: addTask();
+                case 2: tasks.add(addTask());
                     break;
-                case 3: System.exit(0);
+                case 3: 
+                    Task.saveTasks(tasks);
+                    System.exit(0);
             }
         }
     }
     
-    static public void ListTasks() throws IOException, ClassNotFoundException
+    static public void ListTasks(PriorityQueue<Task> tasks) throws IOException, ClassNotFoundException
     {
         
-        PriorityQueue<Task> tasks = Task.readAllTasks();
-        if(tasks==null)
+        PriorityQueue<Task> Tasks = tasks;
+        if(Tasks!=null)
         {
-        int N= tasks.size();
+        int N= Tasks.size();
         System.out.println("[INFO]  Total Tasks : "+N);
         System.out.println("[INFO]  Listing all Tasks");
         for(int i=0;i<N;i++)
         {
-            Task t = tasks.poll();
+            Task t = Tasks.poll();
             System.out.println("\nTask No. : "+(i+1));
             System.out.println("Title : "+t.getTitle());
             System.out.println("Desc : "+t.getDesc());
@@ -77,7 +80,7 @@ public class TaskSave {
         }
         
     }
-    public static void addTask() throws ParseException, IOException, FileNotFoundException, ClassNotFoundException
+    public static Task addTask() throws ParseException, IOException, FileNotFoundException, ClassNotFoundException
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Creating a new task :-) ");
@@ -106,7 +109,7 @@ public class TaskSave {
             tsk = new Task(s, d, d1, pr);
         }
         
-        Task.writeTask(tsk);
+        return tsk;
     }
 
 }
