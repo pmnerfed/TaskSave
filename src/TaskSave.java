@@ -27,7 +27,7 @@ public class TaskSave {
     public static void main(String[] args) throws IOException, ClassNotFoundException, ParseException {
         // TODO 
         int num;
-        PriorityQueue<Task> tasks = new PriorityQueue<Task>();
+        PriorityQueue<Task> tasks;
         tasks = Task.readAllTasks();
         while(true) 
         {
@@ -58,23 +58,23 @@ public class TaskSave {
     
     static public void ListTasks(PriorityQueue<Task> tasks) throws IOException, ClassNotFoundException
     {
-        
-        PriorityQueue<Task> Tasks = tasks;
-        if(Tasks!=null)
+        if(tasks!=null)
         {
-        int N= Tasks.size();
+        Iterator it = tasks.iterator();
+        int N = tasks.size();
         System.out.println("[INFO]  Total Tasks : "+N);
         System.out.println("[INFO]  Listing all Tasks");
-        for(int i=0;i<N;i++)
+        int i=0;
+        while(it.hasNext())
         {
-            Task t = Tasks.poll();
+            Task t = (Task) it.next();
             System.out.println("\nTask No. : "+(i+1));
             System.out.println("Title : "+t.getTitle());
             System.out.println("Desc : "+t.getDesc());
             System.out.println("Creation Time : "+t.getCTime());
             System.out.println("Expiration Time : "+t.getETime());
             System.out.println("Priority Level : "+t.getPriority());
-        }
+        };
         System.out.println("\n\nChoose a Task By pressing its Number...");
         System.out.println("OR you can go back by pressing #");
         }
@@ -100,7 +100,7 @@ public class TaskSave {
         else{
             d1=null;
         }
-        System.out.println("Enter priority [Default : 1] :: ");
+        System.out.println("Enter priority :: ");
         int pr = in.nextInt();
         Task tsk;
         if("".equals(datetime)){
